@@ -2,11 +2,11 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AppComponent } from './app.component';
 import { AuthGuardService } from './core/services/guards/auth-guard.service';
-import { SharedModule } from './shared/shared.module';
 
 const routes: Routes = [
   {
-    path: '', pathMatch: 'full', canActivate: [AuthGuardService], component: AppComponent
+    path: '', pathMatch: 'full', canActivate: [AuthGuardService], 
+    component: AppComponent
   },
   {
     path: "identity", loadChildren: () => import("./identity/identity.module").then(it => it.IdentityModule)

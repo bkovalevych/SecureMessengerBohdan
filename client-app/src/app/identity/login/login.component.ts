@@ -1,20 +1,22 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
-  template: `
-    <p>
-      login works!
-    </p>
-  `,
-  styles: [
-  ]
+  templateUrl: './login.component.html',
+  styles: [ ``
+  ],
+  encapsulation: ViewEncapsulation.None
 })
 export class LoginComponent implements OnInit {
 
-  constructor() { }
+  constructor(private router: Router) { }
 
   ngOnInit(): void {
   }
-
+  navigateToRegister() {
+    this.router.navigate(['/identity/register'], {
+      queryParamsHandling: 'merge'
+    })
+  }
 }
