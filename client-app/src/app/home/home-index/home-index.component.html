@@ -1,0 +1,14 @@
+<div class="container">
+    <div class="row">
+        <div class="col-12 col-sm-6 d-none d-sm-block" #chatsView>
+            <app-chats [chats]="chats" (onSelectedChat)="onSelectedChat($event)" ></app-chats>
+        </div>
+        <div class="col-12 col-sm-6 d-sm-block" #messagesView>
+            <button class="p-button p-button-text d-block d-sm-none"
+                (click)="toggleChats()">
+                <i class="pi pi-bars"></i>
+            </button>
+            <app-messages [chat]="selectedChat"></app-messages>
+        </div>
+    </div>
+</div>

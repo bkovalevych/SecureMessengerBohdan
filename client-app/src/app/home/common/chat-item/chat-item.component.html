@@ -1,0 +1,15 @@
+<div class="row d-flex justify-items-center" style="height: 4rem; margin-top: 10px;">
+    <p-avatar 
+        *ngIf="chat.countOfUnreadMessages"
+        [label]="chat.name"
+        pBadge
+        styleClass="mr-5"
+        size="xlarge"
+        value="{{chat.countOfUnreadMessages}}"></p-avatar>
+    <p-avatar 
+        *ngIf="!chat.countOfUnreadMessages"
+        [label]="chat.name"
+        styleClass="mr-5"
+        size="xlarge"></p-avatar>
+  </div>
+      

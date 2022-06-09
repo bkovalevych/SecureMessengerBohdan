@@ -5,11 +5,12 @@ import { AuthGuardService } from './core/services/guards/auth-guard.service';
 
 const routes: Routes = [
   {
-    path: '', pathMatch: 'full', canActivate: [AuthGuardService], 
-    component: AppComponent
+    path: "identity", loadChildren: () => import("./identity/identity.module").then(it => it.IdentityModule)
   },
   {
-    path: "identity", loadChildren: () => import("./identity/identity.module").then(it => it.IdentityModule)
+    path: '', pathMatch: 'full',
+    canActivate: [AuthGuardService],
+    loadChildren: () => import("./home/home.module").then(it => it.HomeModule)
   }
 ];
 

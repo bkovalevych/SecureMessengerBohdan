@@ -1,0 +1,11 @@
+<div class="row d-flex align-content-start" style="height: 100vh;">
+chats
+    <p-listbox [options]="chats" 
+        dataKey="id" 
+        [(ngModel)]="selectedChat" 
+        (ngModelChange)="onSelectChanged()">
+        <ng-template pTemplate="item" let-chat>
+            <app-chat-item [chat]="chat" style="width: 100%;"></app-chat-item>
+        </ng-template>
+    </p-listbox>
+</div>

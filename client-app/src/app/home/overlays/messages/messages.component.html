@@ -1,0 +1,12 @@
+<div class="row">
+    <div *ngIf="chat">
+        <p-avatar
+            [label]="chat.name"
+            size="xlarge">
+        </p-avatar>
+    </div>
+    messages
+    <div class="row d-flex">
+        <app-message-item *ngFor="let msg of messages" [message]="msg" [isFromMe]="isFromMe(msg)"></app-message-item>
+    </div>
+</div>
