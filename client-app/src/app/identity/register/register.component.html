@@ -1,0 +1,36 @@
+<div class="container h-100">
+    <div class="row align-items-center h-100">
+        <div class="mx-auto" style="max-width: 300px;">
+            <p-panel header="Register" >
+                <form>
+                    <div >
+                        <label class="col-12" for="email">Email</label>
+                        <input class="col-12" pInputText id="email" />
+                    </div>
+                    <div>
+                        <label class="col-12" for="password">Password</label>
+                        <input class="col-12" pInputText id="password" type="password"/>
+                    </div>
+                    <div>
+                        <label class="col-12" for="confirm-password">Confirm Password</label>
+                        <input class="col-12" pInputText id="confirm-password" type="password"/>
+                    </div>
+                    <div >
+                        <label class="col-12" for="first-name">First Name</label>
+                        <input class="col-12" pInputText id="first-name" />
+                    </div>
+                    <div >
+                        <label class="col-12" for="last-name">Last Name</label>
+                        <input class="col-12" pInputText id="last-name" />
+                    </div>
+                    <div style="margin-top: 10px;" class="row d-flex justify-content-center">
+                        <button pButton class="col-4">Register</button>
+                        <div style="margin-top: 10px; margin-bottom: -10px;">
+                            <button pButton class="p-button-text p-button-sm" (click)="navigateToLogin()">Or login</button>
+                        </div>
+                    </div>
+                </form>
+            </p-panel>
+        </div>
+    </div>
+</div>
