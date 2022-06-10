@@ -1,6 +1,19 @@
+<div class="row d-flex align-items-center">
+    <div class="col-1">
+        <p-avatar [label]="userLabel" size="xlarge"></p-avatar>
+    </div>
+    <div class="col-1">
+        <p-menu #menu [model]="menuSettings" [popup]="true"></p-menu>
+        <button styleClass="mr-5" #btn type="button" pButton 
+            icon="pi pi-arrow-circle-down"
+            label="Actions" 
+            (click)="menu.toggle($event)"></button>
+    </div>
+    
+</div>
 <div class="container">
-    <div class="row">
-        <div class="col-12 col-sm-6 d-none d-sm-block" #chatsView>
+    <div class="row" *ngIf="user">
+        <div class="col-12 col-sm-3 d-none d-sm-block" #chatsView>
             <app-chats [chats]="chats" (onSelectedChat)="onSelectedChat($event)" ></app-chats>
         </div>
         <div class="col-12 col-sm-6 d-sm-block" #messagesView>

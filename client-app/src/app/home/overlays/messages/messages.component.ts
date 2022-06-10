@@ -23,7 +23,7 @@ export class MessagesComponent implements OnInit, OnChanges {
           fromName: changes['chat'].currentValue['name'],
           toId: "",
           toName: "me",
-          message: `message n ${val}. from ${changes['chat'].currentValue['name']}`
+          text: `message n ${val}. from ${changes['chat'].currentValue['name']}`
         }))
     }
   }

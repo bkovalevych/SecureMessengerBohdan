@@ -11,6 +11,8 @@ import { HomeIndexComponent } from './home-index/home-index.component';
 import { ListboxModule } from 'primeng/listbox'
 import { BadgeModule } from 'primeng/badge'
 import { AvatarModule } from 'primeng/avatar';
+import { MenuModule } from 'primeng/menu';
+import { SlideMenuModule } from 'primeng/slidemenu';
 import { MessageInputComponent } from './common/message-input/message-input.component'
 
 @NgModule({
@@ -28,7 +30,9 @@ import { MessageInputComponent } from './common/message-input/message-input.comp
     SharedModule,
     ListboxModule,
     BadgeModule,
-    AvatarModule
+    AvatarModule,
+    MenuModule,
+    SlideMenuModule
   ]
 })
 export class HomeModule { }
