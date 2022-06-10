@@ -4,7 +4,7 @@ export class MessageValue {
     fromName?: string;
     toId: string;
     toName?: string;
-    message: string;
+    text: string;
     isUnread?: boolean = false;
     constructor(init: Partial<MessageValue>) {
         Object.assign(this, init);

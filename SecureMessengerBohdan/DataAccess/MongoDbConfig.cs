@@ -1,4 +1,4 @@
-﻿namespace SecureMessengerBohdan.Settings
+﻿namespace SecureMessengerBohdan.DataAccess
 {
     public class MongoDbConfig
     {
