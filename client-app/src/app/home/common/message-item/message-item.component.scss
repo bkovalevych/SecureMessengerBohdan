@@ -1,0 +1,44 @@
+.my-msg {
+    margin-top: 10px;
+    position: relative;
+    padding-left: 10px;
+    padding-right: 10px;
+    margin-right: 10px;
+    background-color: var(--blue-100);
+    align-self: end;
+    float: right;
+    max-width:  600px;
+    
+    &:after {
+        content: "";
+        left: 100%;
+        bottom: 0;
+        width: 0px;
+        height: 10px;
+        border-left: solid 10px var(--blue-100);
+        border-top: solid transparent 10px;
+        position: absolute;
+    }
+}
+
+.msg {
+    margin-top: 10px;
+    position: relative;
+    padding-left: 10px;
+    padding-right: 10px;
+    margin-right: 10px;
+    background-color: var(--surface-400);
+    align-self: end;
+    max-width:  600px;
+    float: left;
+    &:after {
+        content: "";
+        right: 100%;
+        bottom: 0;
+        width: 0px;
+        height: 10px;
+        border-right: solid 10px var(--surface-400);
+        border-top: solid transparent 10px;
+        position: absolute;
+    }
+}
