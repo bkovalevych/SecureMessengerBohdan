@@ -1,8 +1,8 @@
-<div class="row d-flex align-items-center">
-    <div class="col-1">
+<div class="row d-flex align-items-center" style="height: 100px;">
+    <div class="col-2">
         <p-avatar [label]="userLabel" size="xlarge"></p-avatar>
     </div>
-    <div class="col-1">
+    <div class="col-2">
         <p-menu #menu [model]="menuSettings" [popup]="true"></p-menu>
         <button styleClass="mr-5" #btn type="button" pButton 
             icon="pi pi-arrow-circle-down"
@@ -12,16 +12,24 @@
     
 </div>
 <div class="container">
-    <div class="row" *ngIf="user">
-        <div class="col-12 col-sm-3 d-none d-sm-block" #chatsView>
-            <app-chats [chats]="chats" (onSelectedChat)="onSelectedChat($event)" ></app-chats>
+    <div class="row d-flex align-items-stretch" *ngIf="user" style="height: calc(100vh - 100px);">
+        <div class="col-12 col-sm-4 d-none d-sm-block" #chatsView style="background-color: var(--gray-400);">
+            <app-chats [chats]="chats" (onSelectedChat)="onSelectedChat($event)" [initChat]="selectedChat"></app-chats>
+            <div *ngIf="chats && chats.length == 0">
+                <p>There are no chats</p>
+                <button styleClass="mr-5" pButton 
+                    icon="pi pi-arrow-down"
+                    label="Init chats" 
+                    (click)="initChats()"></button>
+            </div>
         </div>
-        <div class="col-12 col-sm-6 d-sm-block" #messagesView>
+        <div class="col-12 col-sm-8 d-sm-block align-items-stretch" #messagesView style="background-color: var(--surface-500);">
             <button class="p-button p-button-text d-block d-sm-none"
-                (click)="toggleChats()">
+                (click)="toggleChats()"
+                style="height: 30px;">
                 <i class="pi pi-bars"></i>
             </button>
-            <app-messages [chat]="selectedChat"></app-messages>
+            <app-messages [chat]="selectedChat" [user]="user"></app-messages>
         </div>
     </div>
 </div>

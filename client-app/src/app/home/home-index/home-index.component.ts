@@ -1,15 +1,17 @@
 import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MenuItem } from 'primeng/api';
-import { Subscription } from 'rxjs';
+import { first, firstValueFrom, forkJoin, map, Subscription } from 'rxjs';
 import { ChatValue } from 'src/app/core/models/values/chat-value';
 import { UserValue } from 'src/app/core/models/values/user-value';
 import { AuthService } from 'src/app/core/services/api/auth.service';
+import { ChatService } from 'src/app/core/services/api/chat.service';
 
 @Component({
   selector: 'app-home-index',
   templateUrl: './home-index.component.html',
-  styles: [
+  styleUrls: [
+    './home-index.component.scss'
   ]
 })
 export class HomeIndexComponent implements OnInit, OnDestroy {
@@ -20,18 +22,13 @@ export class HomeIndexComponent implements OnInit, OnDestroy {
   userLabel:string;
   menuSettings: MenuItem[];
 
-  chats: ChatValue[] = [
-    {id: "1", name: "1", countOfUnreadMessages: 0},
-    {id: "2", name: "2", countOfUnreadMessages: 0},
-    {id: "3", name: "3", countOfUnreadMessages: 0},
-    {id: "4", name: "4", countOfUnreadMessages: 3},
-    {id: "5", name: "5", countOfUnreadMessages: 0},
-  ];
-  selectedChat: ChatValue;
+  chats: ChatValue[] = [];
+  selectedChat: ChatValue | null;
 
   constructor(
     private router: Router,
     private activatedRoute: ActivatedRoute,
+    private chatService: ChatService,
     private authService: AuthService) { }
 
   onSelectedChat(chat: ChatValue) {
@@ -50,22 +47,29 @@ export class HomeIndexComponent implements OnInit, OnDestroy {
         }
       }
     ]
+    forkJoin({user: this.authService.getUser(), chats: this.chatService.loadChats()})
+    .pipe(map(({user, chats}) => {
+      this.user = user
+      this.userLabel = user.email.substring(0, 2);
+      this.chats = chats;
+      return chats;
+    }))
+    .pipe(map(this.registerQueryChanges))
+    .subscribe()
+  }
+
+  registerQueryChanges = (chats: ChatValue[]) => {
     this.sub = this.activatedRoute.queryParams
-      .subscribe(queryParams => {
-        if (queryParams['chatId']) {
-          this.onSelectedChat({
-            id: queryParams['chatId'],
-            countOfUnreadMessages: 0,
-            name: queryParams['chatId']
-          })
-        }
-      })
-    
-    this.authService.getUser()
-      .subscribe(user => {
-        this.user = user
-        this.userLabel = user.email.substring(0, 2);
-      });
+    .subscribe(queryParams => {
+      if (!queryParams['chatId']) {
+        return;
+      }
+      let chat = chats.find(chat => chat.id == queryParams['chatId']);
+      if (!chat) {
+        return;
+      }
+      this.onSelectedChat(chat)
+    })
   }
 
   ngOnDestroy(): void {
@@ -73,7 +77,19 @@ export class HomeIndexComponent implements OnInit, OnDestroy {
   }
 
   toggleChats() {
+    this.router.navigate([], {
+      queryParams: {
+        chatId: null
+      },
+      queryParamsHandling: "merge"
+    })
+    this.selectedChat = null;
     this.chatsView.nativeElement.classList.toggle('d-none');
     this.messagesView.nativeElement.classList.toggle('d-none');
+  }
+
+  async initChats() {
+    await firstValueFrom(this.chatService.initChats())
+    this.chats = await firstValueFrom(this.chatService.loadChats())
   }
 }

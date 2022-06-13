@@ -1,5 +1,8 @@
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { map, Observable, of } from 'rxjs';
+import { environment } from 'src/environments/environment';
+import { ApiResponse } from '../../models/values/api-response';
 import { ChatValue } from '../../models/values/chat-value';
 
 @Injectable({
@@ -7,16 +10,15 @@ import { ChatValue } from '../../models/values/chat-value';
 })
 export class ChatService {
 
-  constructor() { }
+  constructor(private http: HttpClient) { }
 
   loadChats(): Observable<ChatValue[]> {
-    return of<ChatValue[]>([
-      new ChatValue({
-        countOfUnreadMessages: 0,
-        id: "1",
-        name: "chat"
-      }),
-    ])
+    return this.http.get<ApiResponse<ChatValue[]>>(`${environment.baseUrl}/api/chats`)
+      .pipe(map(it => (it.result)))
+  }
+
+  initChats() {
+    return this.http.post(`${environment.baseUrl}/api/chats/init`, {});
   }
 
   getChatUpdates() : Observable<ChatValue[]> {

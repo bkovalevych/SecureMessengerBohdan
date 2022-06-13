@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SecureMessengerBohdan.Application.Requests.GetUserDetails;
+using SecureMessengerBohdan.Application.Wrappers;
 using SecureMessengerBohdan.Identity.Requests.Login;
 using SecureMessengerBohdan.Identity.Requests.Refresh;
 using SecureMessengerBohdan.Identity.Requests.Register;

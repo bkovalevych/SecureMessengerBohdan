@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Identity;
+using SecureMessengerBohdan.Application.Exceptions;
 using SecureMessengerBohdan.Identity.Models;
 
 namespace SecureMessengerBohdan.Identity.Requests.Register
@@ -18,14 +19,16 @@ namespace SecureMessengerBohdan.Identity.Requests.Register
             var user = new ApplicationUser()
             {
                 Email = request.Email,
-                UserName = request.Email,
+                UserName = request.UserName,
                 FirstName = request.FirstName,
-                LastName = request.LastName,
+                LastName = request.LastName
             };
             var result = await _userManager.CreateAsync(user, request.Password);
             if (!result.Succeeded)
             {
-                throw new ArgumentException($"Eror to create user. {string.Join('\n', result.Errors)}");
+                throw new DomainException(result.Errors
+                    .Select(result => result.Description)
+                    .ToArray());
             }
             return Unit.Value;
         }

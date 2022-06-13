@@ -1,0 +1,4 @@
+<div class="row d-flex justify-content-center">
+    <input pInputText type="text" [(ngModel)]="text" class="col-7"/>
+    <button pButton [disabled]="!text?.length" class="col-2" (click)="sendMessage()">Send</button>
+</div>

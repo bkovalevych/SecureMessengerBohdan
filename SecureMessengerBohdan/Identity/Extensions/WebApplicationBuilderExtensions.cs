@@ -29,6 +29,7 @@ namespace SecureMessengerBohdan.Identity.Extensions
                     conf.Password.RequireDigit = false;
                     conf.Password.RequireLowercase = false;
                     conf.SignIn.RequireConfirmedAccount = false;
+                    conf.User.RequireUniqueEmail = true;
                 })
                 .AddMongoDbStores<ApplicationUser, ApplicationRole, Guid>(settings.ConnectionString, 
                 settings.Name);

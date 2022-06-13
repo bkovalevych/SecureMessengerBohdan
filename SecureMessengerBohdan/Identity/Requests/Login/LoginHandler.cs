@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Identity;
+using SecureMessengerBohdan.Application.Exceptions;
 using SecureMessengerBohdan.Identity.Helpers;
 using SecureMessengerBohdan.Identity.Models;
 
@@ -25,12 +26,12 @@ namespace SecureMessengerBohdan.Identity.Requests.Login
             var user = await _userManager.FindByEmailAsync(request.Email);
             if (user == null)
             {
-                throw new ArgumentException("User does not exist");
+                throw new DomainException("User does not exist");
             }
             var signInResult = await _signInManager.PasswordSignInAsync(user, request.Password, false, false);
             if (!signInResult.Succeeded)
             {
-                throw new ArgumentException("Password is incorrect");
+                throw new DomainException("Password is incorrect");
             }
             if (string.IsNullOrEmpty(user.RefreshToken))
             {

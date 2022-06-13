@@ -2,6 +2,7 @@
 using SecureMessengerBohdan.Identity.Settings;
 using System.Reflection;
 using MediatR;
+using SecureMessengerBohdan.Application.Services;
 
 namespace SecureMessengerBohdan.Extensions
 {
@@ -19,6 +20,9 @@ namespace SecureMessengerBohdan.Extensions
                 builder.Configuration.GetSection(nameof(JwtConfig))
                 .Bind(conf));
             builder.Services.AddMediatR(Assembly.GetExecutingAssembly());
+            builder.Services.AddHttpContextAccessor();
+            builder.Services.AddScoped<CurrentUserService>();
+            builder.Services.AddScoped<ApplicationDbContext>();
 
             return builder;
         }

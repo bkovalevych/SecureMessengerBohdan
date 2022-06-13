@@ -17,7 +17,7 @@ namespace SecureMessengerBohdan.Identity.Helpers
 
         public TokenWriter(IOptions<JwtConfig> jwtSettings)
         {
-            _lifeTime = TimeSpan.FromMinutes(30);
+            _lifeTime = TimeSpan.FromHours(30);
             _key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Value.Secret));
         }
 

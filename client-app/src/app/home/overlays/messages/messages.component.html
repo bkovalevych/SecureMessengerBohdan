@@ -1,12 +1,32 @@
-<div class="row">
-    <div *ngIf="chat">
-        <p-avatar
-            [label]="chat.name"
-            size="xlarge">
-        </p-avatar>
-    </div>
-    messages
-    <div class="row d-flex">
+<div class="row d-flex flex-column" style="height: calc(100vh - 130px);">
+    <h3>Messages</h3>
+    <table *ngIf="chat" class="row">
+        <tr>
+            <td class="col-2">
+                <p-avatar 
+                    *ngIf="chat.countOfUnreadMessages"
+                    [label]="chat.name[0]"
+                    pBadge
+                    styleClass="mr-5"
+                    size="xlarge"
+                    value="{{chat.countOfUnreadMessages}}"></p-avatar>
+                <p-avatar 
+                    *ngIf="!chat.countOfUnreadMessages"
+                    [label]="chat.name[0]"
+                    styleClass="mr-5"
+                    size="xlarge"></p-avatar>
+            </td>
+            <td class="col-3">{{chat.name}}</td>
+        </tr>
+    </table>
+    
+    <div class="row d-flex flex-column-reverse">
         <app-message-item *ngFor="let msg of messages" [message]="msg" [isFromMe]="isFromMe(msg)"></app-message-item>
+    </div>
+    <div *ngIf="chat" class="row mt-auto" style="margin-bottom: 10px;">
+        <app-message-input></app-message-input>
+    </div>
+    <div *ngIf="!chat">
+        Chat is not selected
     </div>
 </div>

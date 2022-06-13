@@ -1,12 +1,12 @@
 ﻿namespace SecureMessengerBohdan.Application.Exceptions
 {
-    public class ApplicationException : Exception
+    public class DomainException : Exception
     {
-        public ApplicationException() : base("base exception")
+        public DomainException() : base("base exception")
         {
         }
 
-        public ApplicationException(params string[] messages)
+        public DomainException(params string[] messages)
         {
             Messages.AddRange(messages);
         }

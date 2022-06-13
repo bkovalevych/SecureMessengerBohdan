@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using SecureMessengerBohdan.Application.Exceptions;
 using SecureMessengerBohdan.Application.Wrappers;
 
 namespace SecureMessengerBohdan.Filters
@@ -16,9 +17,9 @@ namespace SecureMessengerBohdan.Filters
                 };
                 context.Result = new OkObjectResult(wrappedResult);
             }
-            if (context.Exception is ArgumentException argumentException)
+            if (context.Exception is DomainException domainException)
             {
-                context.Result = new BadRequestObjectResult(new ResultWrapper(argumentException.Message));
+                context.Result = new BadRequestObjectResult(new ResultWrapper(domainException.Messages.ToArray()));
                 context.ExceptionHandled = true;
             }
 
@@ -26,7 +27,10 @@ namespace SecureMessengerBohdan.Filters
 
         public void OnActionExecuting(ActionExecutingContext context)
         {
-
+            if (!context.ModelState.IsValid)
+            {
+                context.Result = new BadRequestObjectResult(new ResultWrapper(context.ModelState.Select(it => $"{it.Key} {it.Value}").ToArray()));
+            }
         }
 
 
