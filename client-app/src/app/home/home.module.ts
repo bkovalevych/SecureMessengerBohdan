@@ -14,6 +14,7 @@ import { AvatarModule } from 'primeng/avatar';
 import { MenuModule } from 'primeng/menu';
 import { SlideMenuModule } from 'primeng/slidemenu';
 import { MessageInputComponent } from './common/message-input/message-input.component'
+import { VirtualScrollerModule } from 'primeng/virtualscroller'
 
 @NgModule({
   declarations: [
@@ -32,7 +33,8 @@ import { MessageInputComponent } from './common/message-input/message-input.comp
     BadgeModule,
     AvatarModule,
     MenuModule,
-    SlideMenuModule
+    SlideMenuModule,
+    VirtualScrollerModule
   ]
 })
 export class HomeModule { }

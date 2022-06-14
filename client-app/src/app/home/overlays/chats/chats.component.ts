@@ -17,7 +17,9 @@ export class ChatsComponent implements OnInit, OnChanges {
   constructor(private router: Router) { }
   
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['initChat'].currentValue || (!changes['initChat'].currentValue && changes['initChat'].previousValue)) {
+    if (changes['initChat'] && (
+      changes['initChat'].currentValue 
+      || (!changes['initChat'].currentValue && changes['initChat'].previousValue))) {
       this.selectedChat = changes['initChat'].currentValue
     }  
   }

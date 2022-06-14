@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using SecureMessengerBohdan.Application.Models;
+using SecureMessengerBohdan.Security.Models;
 
 namespace SecureMessengerBohdan.DataAccess
 {
@@ -19,6 +20,14 @@ namespace SecureMessengerBohdan.DataAccess
                 .Descending(m => m.Sent);
             MessageRecord.Indexes
                 .CreateOne(new CreateIndexModel<Message>(index));
+        }
+        
+        public IMongoCollection<ChatKey> ChatKeyRecord
+        {
+            get
+            {
+                return _mongoDatabase.GetCollection<ChatKey>(nameof(ChatKeyRecord));
+            }
         }
 
         public IMongoCollection<Message> MessageRecord

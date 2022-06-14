@@ -8,6 +8,7 @@ import { MessageRequest } from '../../models/requests/message-request';
 import { HttpClient } from '@angular/common/http';
 import { ApiResponse } from '../../models/values/api-response';
 import { PagingList } from '../../models/values/paging-list';
+import { ChatKeyHelperService } from '../security/chat-key-helper.service';
 
 @Injectable({
   providedIn: 'root'
@@ -15,15 +16,29 @@ import { PagingList } from '../../models/values/paging-list';
 export class MessageService {
   private connection: signalR.HubConnection | null;
   private chatId: string;
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private chatKeyHelper: ChatKeyHelperService) { }
 
   loadMessages(idChat: string, paging: Paging) {
     return this.http.get<ApiResponse<PagingList<MessageValue>>>(
       `${environment.baseUrl}/api/chats/${idChat}/messages?skip=${paging.skip}&take=${paging.take}`)
-      .pipe(map(it => it.result));
+      .pipe(map(it => {
+        for (const message of it.result.items) {
+          message.text = this.chatKeyHelper.decrypt(message.text);
+        }
+        return it.result
+      }));
   }
 
-  init(chatId: string) { 
+  async init(chatId: string) { 
+    await this.handleInitChatKey(chatId);
+    this.handleInitConnection(chatId);
+  }
+  
+  handleInitChatKey(chatId: string) {
+    return this.chatKeyHelper.initChatKey(chatId);
+  }
+
+  handleInitConnection(chatId: string) {
     if (!this.connection) {
       let url = `${environment.baseUrl}/chatHub`;
       this.connection = new signalR.HubConnectionBuilder()
@@ -66,16 +81,20 @@ export class MessageService {
   updateMessages(): Observable<MessageValue> {
     const subject = new Subject<MessageValue>();
     this.connection?.on("ReceiveMessage", args => {
-      subject.next(args);
+      const message: MessageValue = {...args};
+      const text = this.chatKeyHelper.decrypt(message.text);
+      message.text = text;
+      subject.next(message);
     });
     
     return subject;
   }
 
   sendMessage(text: string) {
-    let message:MessageRequest = {
+    const encryptedText = this.chatKeyHelper.encrypt(text);
+    let message: MessageRequest = {
       chatId: this.chatId,
-      text: text
+      text: encryptedText
     };
     return this.connection?.invoke("SendMessage", message);
   }

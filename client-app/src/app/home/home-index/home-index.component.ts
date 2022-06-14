@@ -6,13 +6,12 @@ import { ChatValue } from 'src/app/core/models/values/chat-value';
 import { UserValue } from 'src/app/core/models/values/user-value';
 import { AuthService } from 'src/app/core/services/api/auth.service';
 import { ChatService } from 'src/app/core/services/api/chat.service';
+import { RsaHelperService } from 'src/app/core/services/security/rsa-helper.service';
 
 @Component({
   selector: 'app-home-index',
   templateUrl: './home-index.component.html',
-  styleUrls: [
-    './home-index.component.scss'
-  ]
+  styles: []
 })
 export class HomeIndexComponent implements OnInit, OnDestroy {
   @ViewChild('chatsView') chatsView: ElementRef<HTMLDivElement>;
@@ -26,6 +25,7 @@ export class HomeIndexComponent implements OnInit, OnDestroy {
   selectedChat: ChatValue | null;
 
   constructor(
+    private rsaHelper: RsaHelperService,
     private router: Router,
     private activatedRoute: ActivatedRoute,
     private chatService: ChatService,
@@ -56,6 +56,7 @@ export class HomeIndexComponent implements OnInit, OnDestroy {
     }))
     .pipe(map(this.registerQueryChanges))
     .subscribe()
+    this.rsaHelper.initRsaKeys();
   }
 
   registerQueryChanges = (chats: ChatValue[]) => {

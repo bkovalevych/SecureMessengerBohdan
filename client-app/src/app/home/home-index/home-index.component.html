@@ -1,19 +1,23 @@
-<div class="row d-flex align-items-center" style="height: 100px;">
-    <div class="col-2">
-        <p-avatar [label]="userLabel" size="xlarge"></p-avatar>
-    </div>
-    <div class="col-2">
-        <p-menu #menu [model]="menuSettings" [popup]="true"></p-menu>
-        <button styleClass="mr-5" #btn type="button" pButton 
-            icon="pi pi-arrow-circle-down"
-            label="Actions" 
-            (click)="menu.toggle($event)"></button>
-    </div>
-    
-</div>
+
 <div class="container">
-    <div class="row d-flex align-items-stretch" *ngIf="user" style="height: calc(100vh - 100px);">
+    <div class="row d-flex align-items-stretch" *ngIf="user" style="height: calc(100vh - 130px);">
         <div class="col-12 col-sm-4 d-none d-sm-block" #chatsView style="background-color: var(--gray-400);">
+            <table>
+                <tr>
+                    <td class="col-2">
+                        <p-menu #menu [model]="menuSettings" [popup]="true"></p-menu>
+                        <button styleClass="mr-5 p-button p-button-text" #btn type="button" pButton 
+                            icon="pi pi-bars"
+                            [label]="userLabel" 
+                            (click)="menu.toggle($event)"></button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        {{user.email}}
+                    </td>
+                </tr>
+            </table>
             <app-chats [chats]="chats" (onSelectedChat)="onSelectedChat($event)" [initChat]="selectedChat"></app-chats>
             <div *ngIf="chats && chats.length == 0">
                 <p>There are no chats</p>

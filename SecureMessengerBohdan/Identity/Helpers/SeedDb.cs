@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using MediatR;
+using Microsoft.AspNetCore.Identity;
 using MongoDB.Driver;
 using SecureMessengerBohdan.Application.Models;
 using SecureMessengerBohdan.DataAccess;
 using SecureMessengerBohdan.Identity.Models;
+using SecureMessengerBohdan.Security.Requests.InitKeyForChat;
 
 namespace SecureMessengerBohdan.Identity.Helpers
 {
@@ -12,6 +14,8 @@ namespace SecureMessengerBohdan.Identity.Helpers
         {
             var userManager = provider.GetRequiredService<UserManager<ApplicationUser>>();
             var applicationContext = provider.GetRequiredService<ApplicationDbContext>();
+            var sender = provider.GetRequiredService<ISender>();
+
             var firstUser = new ApplicationUser
             {
                 UserName = "biba",
@@ -35,7 +39,7 @@ namespace SecureMessengerBohdan.Identity.Helpers
             if (await userManager.FindByEmailAsync(secondUser.Email) == null)
             {
                 await userManager.CreateAsync(secondUser, "12345678");
-                await applicationContext.ChatRecord.InsertOneAsync(new Chat()
+                var chat = new Chat()
                 {
                     Members = new List<ApplicationUser>()
                     {
@@ -43,17 +47,10 @@ namespace SecureMessengerBohdan.Identity.Helpers
                         secondUser
                     },
                     Name = $"{firstUser.UserName} {secondUser.UserName}"
-                });
+                };
+                await applicationContext.ChatRecord.InsertOneAsync(chat);
+                await sender.Send(new InitKeyForChatRequest() { ChatId = chat.Id });
             }
-            //await applicationContext.MessageRecord.InsertOneAsync(new Message()
-            //{
-            //    ChatId = applicationContext.ChatRecord.AsQueryable().First().Id,
-            //    ChatName = applicationContext.ChatRecord.AsQueryable().First().Name,
-            //    FromId = firstUser.Id,
-            //    FromName = firstUser.UserName,
-            //    Sent = DateTimeOffset.Now,
-            //    Text = "hello"
-            //});
         }
     }
 }
