@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges } from '@angular/core';
 import { Router } from '@angular/router';
 import { ChatValue } from 'src/app/core/models/values/chat-value';
 
@@ -8,12 +8,19 @@ import { ChatValue } from 'src/app/core/models/values/chat-value';
   styles: [
   ]
 })
-export class ChatsComponent implements OnInit {
+export class ChatsComponent implements OnInit, OnChanges {
   @Input() chats: ChatValue[];
+  @Input() initChat: ChatValue;
   @Output() onSelectedChat = new EventEmitter<ChatValue>();
-  selectedChat: ChatValue;
+  selectedChat: ChatValue | null;
 
   constructor(private router: Router) { }
+  
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['initChat'].currentValue || (!changes['initChat'].currentValue && changes['initChat'].previousValue)) {
+      this.selectedChat = changes['initChat'].currentValue
+    }  
+  }
 
   ngOnInit(): void {
   }

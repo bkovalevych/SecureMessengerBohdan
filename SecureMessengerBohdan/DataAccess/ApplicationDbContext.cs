@@ -14,6 +14,11 @@ namespace SecureMessengerBohdan.DataAccess
 
             _mongoDatabase = mongoClient.GetDatabase(
                 artWorkSettings.Value.Name);
+            var index = Builders<Message>.IndexKeys
+                .Ascending(m => m.ChatId)
+                .Descending(m => m.Sent);
+            MessageRecord.Indexes
+                .CreateOne(new CreateIndexModel<Message>(index));
         }
 
         public IMongoCollection<Message> MessageRecord
@@ -21,6 +26,14 @@ namespace SecureMessengerBohdan.DataAccess
             get
             {
                 return _mongoDatabase.GetCollection<Message>(nameof(MessageRecord));
+            }
+        }
+
+        public IMongoCollection<Chat> ChatRecord
+        {
+            get
+            {
+                return _mongoDatabase.GetCollection<Chat>(nameof(ChatRecord));
             }
         }
     }

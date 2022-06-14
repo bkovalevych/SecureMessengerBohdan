@@ -5,6 +5,7 @@ export class MessageValue {
     toId: string;
     toName?: string;
     text: string;
+    sent: Date;
     isUnread?: boolean = false;
     constructor(init: Partial<MessageValue>) {
         Object.assign(this, init);

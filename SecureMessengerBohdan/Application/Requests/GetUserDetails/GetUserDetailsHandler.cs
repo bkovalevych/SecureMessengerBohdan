@@ -1,36 +1,21 @@
 ﻿using MediatR;
-using Microsoft.AspNetCore.Identity;
-using SecureMessengerBohdan.Identity.Models;
-using System.Security.Claims;
+using SecureMessengerBohdan.Application.Services;
 
 namespace SecureMessengerBohdan.Application.Requests.GetUserDetails
 {
     public class GetUserDetailsHandler : IRequestHandler<GetUserDetailsRequest, GetUserDto>
     {
-        private readonly IHttpContextAccessor _accessor;
-        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly CurrentUserService _currentUserService;
 
-        public GetUserDetailsHandler(IHttpContextAccessor accessor, UserManager<ApplicationUser> userManager)
+        public GetUserDetailsHandler(CurrentUserService currentUserService)
         {
-            _accessor = accessor;
-            _userManager = userManager;
+            _currentUserService = currentUserService;
         }
 
         public async Task<GetUserDto> Handle(GetUserDetailsRequest request, CancellationToken cancellationToken)
         {
-            var id = _accessor.HttpContext?
-                .User
-                .FindFirstValue(ClaimTypes.NameIdentifier);
-            if (id == null)
-            {
-                throw new ApplicationException("Claim user id is not found");
-            }
-            var user = await _userManager.FindByIdAsync(id);
-            if (user == null)
-            {
-                throw new ApplicationException("User is not found");
-            }
-            
+            var user = await _currentUserService.GetUser();
+
             return new GetUserDto()
             {
                 Email = user.Email,

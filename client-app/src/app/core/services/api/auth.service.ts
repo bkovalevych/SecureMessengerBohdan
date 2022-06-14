@@ -1,11 +1,13 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { map, Observable } from 'rxjs';
+import { first, firstValueFrom, map, Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { LoginRequest } from '../../models/requests/login-request';
 import { TokenValue } from '../../models/values/token-value';
 import { ApiResponse } from '../../models/values/api-response';
 import { UserValue } from '../../models/values/user-value';
+import jwtDecode, { JwtPayload,  } from 'jwt-decode';
+import { RegisterRequest } from '../../models/requests/register-request';
 
 @Injectable({
   providedIn: 'root'
@@ -14,8 +16,18 @@ export class AuthService {
 
   constructor(private http: HttpClient) { }
   
-  isLoggedIn() {
-    return !!this.accessToken;
+  async isLoggedIn() {
+    let payload : JwtPayload = jwtDecode(this.accessToken);
+    let ms = 1000;
+    let expired = (payload.exp || 0) * ms;
+    if (new Date().valueOf() > expired) {
+      try {
+        await firstValueFrom(this.refresh())
+      } catch(e) {
+        return false;
+      }
+    }
+    return this.accessToken.length > 0;
   }
   
   logout() {
@@ -39,6 +51,10 @@ export class AuthService {
     return this.http.post<ApiResponse<TokenValue>>(`${environment.baseUrl}/api/identity/login`, loginRequest)
     .pipe(map(this.mapResponseToResult))
     .pipe(map(this.saveTokensAfterRequest));
+  }
+
+  register(registerRequest: RegisterRequest) {
+    return this.http.post(`${environment.baseUrl}/api/identity/register`, registerRequest);
   }
   
   getUser() {

@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Identity;
+using SecureMessengerBohdan.Application.Exceptions;
 using SecureMessengerBohdan.Identity.Helpers;
 using SecureMessengerBohdan.Identity.Models;
 using SecureMessengerBohdan.Identity.Requests.Login;
@@ -24,20 +25,21 @@ namespace SecureMessengerBohdan.Identity.Requests.Refresh
             var id = principal.FindFirstValue(ClaimTypes.NameIdentifier);
             if (id == null)
             {
-                throw new ArgumentException("Id was not defined");
+                throw new DomainException("Id was not defined");
             }
             var user = await _userManager.FindByIdAsync(id);
             if (user == null)
             {
-                throw new ArgumentException("User was not found");
+                throw new DomainException("User was not found");
             }
             if (user.RefreshToken != request.RefreshToken || request.RefreshToken == null)
             {
-                throw new ArgumentException("RefreshToken mismatched");
+                throw new DomainException("RefreshToken mismatched");
             }
             var refreshToken = _writer.GenerateRefreshToken();
             var accessToken = _writer.WriteAccessToken(user);
-            
+            user.RefreshToken = refreshToken;
+            await _userManager.UpdateAsync(user);
             return new GetTokenDto()
             {
                 AccessToken = accessToken,
