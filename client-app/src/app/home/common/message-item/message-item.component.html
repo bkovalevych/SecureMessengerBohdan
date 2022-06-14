@@ -1,3 +1,7 @@
 <div [ngClass]="{'my-msg': isFromMe, 'msg': !isFromMe}">
+    <div *ngIf="!isFromMe" style="position:absolute; right:100%; margin-right:4px;">
+        <p-avatar [label]="message.fromName[0]"  ></p-avatar>
+    </div>
+    
     {{message.text}}
 </div>

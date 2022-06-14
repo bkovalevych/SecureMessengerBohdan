@@ -6,6 +6,7 @@ using SecureMessengerBohdan.Application.Requests.GetChats;
 using SecureMessengerBohdan.Application.Requests.GetMessages;
 using SecureMessengerBohdan.Application.Requests.InitChats;
 using SecureMessengerBohdan.Application.Wrappers;
+using SecureMessengerBohdan.Security.Requests.GetChatKey;
 
 namespace SecureMessengerBohdan.Controllers
 {
@@ -36,6 +37,12 @@ namespace SecureMessengerBohdan.Controllers
         public async Task InitChats(CancellationToken cancellationToken)
         {
             await Sender.Send(new InitChatsRequest(), cancellationToken);
+        }
+
+        [HttpPost("key")]
+        public async Task<GetChatKeyDto> GetChatKey(GetChatKeyRequest request, CancellationToken cancellationToken)
+        {
+            return await Sender.Send(request, cancellationToken);
         }
     }
 }

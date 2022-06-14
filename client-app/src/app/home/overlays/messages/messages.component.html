@@ -1,4 +1,4 @@
-<div class="row d-flex flex-column" style="height: calc(100vh - 130px);">
+<div class="d-flex flex-column">
     <h3>Messages</h3>
     <table *ngIf="chat" class="row">
         <tr>
@@ -20,12 +20,16 @@
         </tr>
     </table>
     
-    <div class="row d-flex flex-column-reverse">
-        <app-message-item *ngFor="let msg of messages" [message]="msg" [isFromMe]="isFromMe(msg)"></app-message-item>
-    </div>
-    <div *ngIf="chat" class="row mt-auto" style="margin-bottom: 10px;">
-        <app-message-input></app-message-input>
-    </div>
+    <p-virtualScroller [value]="messages" scrollHeight="calc(85vh - 120px)" [itemSize]="70" class="d-flex flex-column-reverse">
+        <ng-template pTemplate="item" let-msg>
+            <app-message-item [message]="msg" [isFromMe]="isFromMe(msg)"></app-message-item>
+        </ng-template>
+        <ng-template pTemplate="footer">
+            <div *ngIf="chat" class="row mt-auto">
+                <app-message-input></app-message-input>
+            </div>
+        </ng-template>
+    </p-virtualScroller>
     <div *ngIf="!chat">
         Chat is not selected
     </div>

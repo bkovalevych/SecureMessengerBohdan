@@ -1,15 +1,15 @@
 import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
+import { firstValueFrom, map, Subscription } from 'rxjs';
 import { Paging } from 'src/app/core/models/queries/paging';
 import { ChatValue } from 'src/app/core/models/values/chat-value';
 import { MessageValue } from 'src/app/core/models/values/message-value';
 import { UserValue } from 'src/app/core/models/values/user-value';
-import { AuthService } from 'src/app/core/services/api/auth.service';
 import { MessageService } from 'src/app/core/services/api/message.service';
 
 @Component({
   selector: 'app-messages',
   templateUrl: './messages.component.html',
-  styles: [ 
+  styles: [
   ]
 })
 export class MessagesComponent implements OnInit, OnChanges, OnDestroy {
@@ -18,7 +18,8 @@ export class MessagesComponent implements OnInit, OnChanges, OnDestroy {
   paging: Paging = {skip: 0, take: 50};
   totalCount: number;
   messages: MessageValue[] = [];
-  
+  subscriptionForUpdates: Subscription;
+
   constructor(private messageService: MessageService) { }
   
   
@@ -26,14 +27,29 @@ export class MessagesComponent implements OnInit, OnChanges, OnDestroy {
     if (changes['chat'].currentValue) {
       this.paging = {skip: 0, take: 50};
       let chat: ChatValue = changes['chat'].currentValue
-      this.messageService.init(chat.id);
-      this.messageService.loadMessages(chat.id, this.paging)
-      .subscribe(messages => {
-        this.totalCount = messages.totalCount;
-        this.paging = { skip: messages.skip, take: messages.take}
-        this.messages = messages.items;
-      })
+      this.messageService.init(chat.id)
+        .then(() => this.loadMessages(chat.id))
+        .then(() => this.subscribeForUpdates());
     }
+  }
+
+  private loadMessages = (chatId: string) => {
+    return firstValueFrom(this.messageService.loadMessages(chatId, this.paging)
+    .pipe(map(messages => {
+      this.totalCount = messages.totalCount;
+      this.paging = { skip: messages.skip, take: messages.take}
+      this.messages = messages.items;
+    })))
+  }
+
+  private subscribeForUpdates = () => {
+    if (this.subscriptionForUpdates) {
+      this.subscriptionForUpdates.unsubscribe();
+    }
+    this.subscriptionForUpdates = this.messageService.updateMessages()
+    .subscribe(message => {
+      this.messages = [message, ...this.messages];
+    })
   }
 
   isFromMe = (message: MessageValue):boolean => {
@@ -41,10 +57,7 @@ export class MessagesComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.messageService.updateMessages()
-    .subscribe(message => {
-      this.messages.unshift(message);
-    })
+    
   }
 
   ngOnDestroy(): void {
