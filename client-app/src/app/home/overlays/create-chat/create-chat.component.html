@@ -1,0 +1,30 @@
+<p-dialog [visible]="visible" [closable]="false" [modal]="true" [blockScroll]="true" [resizable]="false">
+    <ng-template pTemplate="header">
+        Create new chat
+    </ng-template>
+    <div class="container">
+        <div class="row">
+            <label class="col-12">ChatName</label>
+            <input class="col-12" pInputText type="text" [(ngModel)]="chatName">
+        </div>
+        <div class="row" style="width: 300px;">
+            <label class="col-12">Members</label>
+            <p-autoComplete
+                styleClass="col-12"
+                [suggestions]="users" 
+                appendTo="body"
+                [multiple]="true"
+                [(ngModel)]="selectedUsers"
+                [dropdown]="true"
+                [delay]="500"
+                field="userName"
+                optionLabel="name"
+                (completeMethod)="loadUsers($event.query)" ></p-autoComplete>
+        </div>
+    </div>
+    
+    <ng-template pTemplate="footer">
+        <button pButton (click)="cancel()" label="Cancel"></button>
+        <button pButton (click)="save()" label="Create"></button>
+    </ng-template>
+</p-dialog>

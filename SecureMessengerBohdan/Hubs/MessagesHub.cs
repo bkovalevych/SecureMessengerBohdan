@@ -3,38 +3,20 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 using SecureMessengerBohdan.Application.Requests.SendMessage;
 using SecureMessengerBohdan.Application.Services;
-using System.Security.Claims;
+using SecureMessengerBohdan.Hubs.Interfaces;
 
 namespace SecureMessengerBohdan.Hubs
 {
     [Authorize]
-    public class ChatHub : Hub
+    public class MessagesHub : Hub<IMessagesHubClient>
     {
         private readonly ISender _sender;
         private readonly CurrentUserService _currentUserService;
 
-        public ChatHub(ISender sender, CurrentUserService currentUserService)
+        public MessagesHub(ISender sender, CurrentUserService currentUserService)
         {
             _sender = sender;
             _currentUserService = currentUserService;
-        }
-
-        public override async Task OnConnectedAsync()
-        {
-            var id = Context.User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (id != null)
-            {
-                await Groups.AddToGroupAsync(Context.ConnectionId, id);
-            }
-        }
-
-        public override async Task OnDisconnectedAsync(Exception? exception)
-        {
-            var id = Context.User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (id != null)
-            {
-                await Groups.RemoveFromGroupAsync(Context.ConnectionId, id);
-            }
         }
 
         public async Task ActivateChat(string chatId)
@@ -51,9 +33,9 @@ namespace SecureMessengerBohdan.Hubs
         {
             _currentUserService.User = Context.User;
             var messageDto = await _sender.Send(message);
-            
+
             await Clients.Group(message.ChatId)
-                .SendAsync("ReceiveMessage", messageDto);
+                .ReceiveMessage(messageDto);
         }
     }
 }

@@ -24,6 +24,9 @@ export class RsaHelperService {
   }
 
   initRsaKeys() {
+    if (this.privateKey && this.publicKey) {
+      return;
+    }
     let pki = this.forge.pki;
     let rsa = this.forge.pki.rsa;
     let keypair = rsa.generateKeyPair({bits: 2048, e: 0x10001});

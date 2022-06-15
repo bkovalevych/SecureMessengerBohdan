@@ -40,7 +40,7 @@ export class MessageService {
 
   handleInitConnection(chatId: string) {
     if (!this.connection) {
-      let url = `${environment.baseUrl}/chatHub`;
+      let url = `${environment.baseUrl}/messagesHub`;
       this.connection = new signalR.HubConnectionBuilder()
         .configureLogging(signalR.LogLevel.Information)
         .withUrl(url, {
@@ -52,7 +52,7 @@ export class MessageService {
       
       this.connection.start()
         .then(() => {
-          console.log('signalR connected')
+          console.log('signalR messages connected')
           this.connection?.invoke("ActivateChat", chatId);
         })
         .catch(err => {
@@ -78,7 +78,7 @@ export class MessageService {
     }
   }
 
-  updateMessages(): Observable<MessageValue> {
+  onUpdatedMessages(): Observable<MessageValue> {
     const subject = new Subject<MessageValue>();
     this.connection?.on("ReceiveMessage", args => {
       const message: MessageValue = {...args};
@@ -86,7 +86,7 @@ export class MessageService {
       message.text = text;
       subject.next(message);
     });
-    
+
     return subject;
   }
 
