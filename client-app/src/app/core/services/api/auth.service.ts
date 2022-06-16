@@ -63,6 +63,12 @@ export class AuthService {
     .pipe(map(it => it.result));
   }
 
+  getUsers(searchValue: string) {
+    return this.http
+    .get<ApiResponse<UserValue[]>>(`${environment.baseUrl}/api/identity/users?search=${searchValue}`)
+    .pipe(map(it => it.result));
+  }
+
   private mapResponseToResult(response: ApiResponse<TokenValue>) {
     return response.result;
   }

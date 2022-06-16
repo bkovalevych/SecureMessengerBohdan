@@ -21,7 +21,7 @@ namespace SecureMessengerBohdan.Application.Requests.GetChats
 
         public async Task<List<GetChatDto>> Handle(GetChatsRequest request, CancellationToken cancellationToken)
         {
-            var id = new Guid(_currentUserService.UserId);
+            var id = _currentUserService.UserId;
             var project = Builders<Chat>.Projection;
             var filter = Builders<Chat>.Filter;
             var sort = Builders<Chat>.Sort;
@@ -30,7 +30,7 @@ namespace SecureMessengerBohdan.Application.Requests.GetChats
 
             var result = _context.ChatRecord
                 .Aggregate()
-                .Match(filter.ElemMatch(chat => chat.Members, it => it.Id == id))
+                .Match(filter.AnyEq(chat => chat.Members, id))
                 .Lookup<Chat, Message, Chat>(_context.MessageRecord,
                 group => group.Id,
                 message => message.ChatId,
@@ -51,29 +51,6 @@ namespace SecureMessengerBohdan.Application.Requests.GetChats
                     .FirstOrDefault(message => message.Sent == ch.Messages.Max(it => it.Sent))
                 }))
                 .ToList();
-                
-            //var result = _context.ChatRecord
-            //    .AsQueryable()
-            //    .Where(chat => chat.Members.Any(member => member.Id == id))
-            //    .GroupJoin(_context.MessageRecord.AsQueryable(), chat => chat.Id, message => message.ChatId,
-            //    (chat, messages) => new GetChatDto()
-            //    {
-            //        Id = chat.Id,
-            //        Name = chat.Name,
-            //        LastMessage = messages
-            //        .Select(m => new GetMessageDto()
-            //        {
-            //            FromId = m.FromId.ToString(),
-            //            FromName = m.FromName,
-            //            Id = m.Id,
-            //            Sent = m.Sent,
-            //            Text = m.Text
-            //        })
-            //        .Aggregate(null,(a, b) => a.Sent < b.Sent ? b : a, a => )
-            //    })
-
-            //    .ToList();
-
 
             return result;
         }

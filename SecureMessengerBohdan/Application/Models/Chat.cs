@@ -12,7 +12,7 @@ namespace SecureMessengerBohdan.Application.Models
         
         public string Name { get; set; }
 
-        public List<ApplicationUser> Members { get; set; } = new List<ApplicationUser>();
+        public List<string> Members { get; set; } = new List<string>();
 
         
         public List<Message> Messages { get; set; } = new List<Message>();

@@ -41,12 +41,18 @@ app.UseAuthorization();
 app.UseEndpoints(endpoints =>
 {
     endpoints.MapControllers();
-    endpoints.MapHub<ChatHub>("/chatHub", options =>
+    endpoints.MapHub<MessagesHub>("/messagesHub", options =>
     {
         options.Transports =
                 HttpTransportType.WebSockets |
                 HttpTransportType.LongPolling;
     });
+    endpoints.MapHub<ChatsHub>("/chatsHub", options =>
+    {
+        options.Transports =
+                HttpTransportType.LongPolling;
+    });
+
 });
 
 app.Run();

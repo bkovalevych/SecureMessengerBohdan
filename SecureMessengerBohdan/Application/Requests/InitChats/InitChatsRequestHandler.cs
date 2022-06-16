@@ -35,7 +35,7 @@ namespace SecureMessengerBohdan.Application.Requests.InitChats
                 chats.Add(new Chat()
                 {
                     Created = DateTimeOffset.Now,
-                    Members = {user, otherUser},
+                    Members = {user.Id.ToString(), otherUser.Id.ToString()},
                     Name = $"{user.UserName}, {otherUser.UserName}"
                 });
             }

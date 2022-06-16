@@ -14,7 +14,10 @@ import { AvatarModule } from 'primeng/avatar';
 import { MenuModule } from 'primeng/menu';
 import { SlideMenuModule } from 'primeng/slidemenu';
 import { MessageInputComponent } from './common/message-input/message-input.component'
-import { VirtualScrollerModule } from 'primeng/virtualscroller'
+import { VirtualScrollerModule } from 'primeng/virtualscroller';
+import { DialogModule } from 'primeng/dialog'
+import { AutoCompleteModule } from 'primeng/autocomplete'
+import { CreateChatComponent } from './overlays/create-chat/create-chat.component'
 
 @NgModule({
   declarations: [
@@ -23,7 +26,8 @@ import { VirtualScrollerModule } from 'primeng/virtualscroller'
     MessagesComponent,
     MessageItemComponent,
     HomeIndexComponent,
-    MessageInputComponent
+    MessageInputComponent,
+    CreateChatComponent
   ],
   imports: [
     CommonModule,
@@ -34,7 +38,9 @@ import { VirtualScrollerModule } from 'primeng/virtualscroller'
     AvatarModule,
     MenuModule,
     SlideMenuModule,
-    VirtualScrollerModule
+    VirtualScrollerModule,
+    DialogModule,
+    AutoCompleteModule
   ]
 })
 export class HomeModule { }

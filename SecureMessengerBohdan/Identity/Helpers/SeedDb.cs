@@ -41,10 +41,10 @@ namespace SecureMessengerBohdan.Identity.Helpers
                 await userManager.CreateAsync(secondUser, "12345678");
                 var chat = new Chat()
                 {
-                    Members = new List<ApplicationUser>()
+                    Members = new List<string>()
                     {
-                        firstUser,
-                        secondUser
+                        firstUser.Id.ToString(),
+                        secondUser.Id.ToString(),
                     },
                     Name = $"{firstUser.UserName} {secondUser.UserName}"
                 };

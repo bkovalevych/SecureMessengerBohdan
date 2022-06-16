@@ -46,7 +46,7 @@ export class MessagesComponent implements OnInit, OnChanges, OnDestroy {
     if (this.subscriptionForUpdates) {
       this.subscriptionForUpdates.unsubscribe();
     }
-    this.subscriptionForUpdates = this.messageService.updateMessages()
+    this.subscriptionForUpdates = this.messageService.onUpdatedMessages()
     .subscribe(message => {
       this.messages = [message, ...this.messages];
     })

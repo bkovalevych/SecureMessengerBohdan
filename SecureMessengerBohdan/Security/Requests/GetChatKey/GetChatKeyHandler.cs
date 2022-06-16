@@ -60,7 +60,7 @@ namespace SecureMessengerBohdan.Security.Requests.GetChatKey
         {
             var isMember = _context.ChatRecord.AsQueryable()
                 .Any(chat =>
-                chat.Members.Any(member => member.Id == user.Id));
+                chat.Members.Any(member => member == user.Id.ToString()));
             if (!isMember)
             {
                 throw new DomainException("user is not a member of a group");

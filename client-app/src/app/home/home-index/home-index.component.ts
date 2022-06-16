@@ -23,6 +23,7 @@ export class HomeIndexComponent implements OnInit, OnDestroy {
 
   chats: ChatValue[] = [];
   selectedChat: ChatValue | null;
+  createChatModalVisibility = false;
 
   constructor(
     private rsaHelper: RsaHelperService,
@@ -37,6 +38,10 @@ export class HomeIndexComponent implements OnInit, OnDestroy {
     this.messagesView?.nativeElement.classList.remove('d-none');
   }
 
+  oncreateChatModalVisibilityChanged(visible: boolean) {
+    this.createChatModalVisibility = visible;
+  }
+
   ngOnInit(): void {
     this.menuSettings = [
       {
@@ -44,6 +49,12 @@ export class HomeIndexComponent implements OnInit, OnDestroy {
         command: () => {
           this.authService.logout();
           this.router.navigateByUrl("/identity/login");
+        }
+      },
+      {
+        label: "create chat",
+        command: () => {
+          this.oncreateChatModalVisibilityChanged(true);
         }
       }
     ]
@@ -57,6 +68,15 @@ export class HomeIndexComponent implements OnInit, OnDestroy {
     .pipe(map(this.registerQueryChanges))
     .subscribe()
     this.rsaHelper.initRsaKeys();
+    this.registerChatConnection();
+  }
+
+  registerChatConnection() {
+    this.chatService.initConnection()
+    this.chatService.onUpdatedChats()
+    .subscribe(chat => {
+      this.chats = [chat, ...this.chats]
+    });
   }
 
   registerQueryChanges = (chats: ChatValue[]) => {
@@ -74,6 +94,7 @@ export class HomeIndexComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    this.chatService.closeConnection();
     this.sub.unsubscribe();
   }
 
@@ -93,4 +114,6 @@ export class HomeIndexComponent implements OnInit, OnDestroy {
     await firstValueFrom(this.chatService.initChats())
     this.chats = await firstValueFrom(this.chatService.loadChats())
   }
+
+
 }
