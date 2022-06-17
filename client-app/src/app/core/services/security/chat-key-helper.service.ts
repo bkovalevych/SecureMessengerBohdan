@@ -7,6 +7,7 @@ import { ChatKeyValue } from '../../models/values/chat-key-value';
 import { RsaHelperService } from './rsa-helper.service';
 import { ApiResponse } from '../../models/values/api-response';
 import { firstValueFrom, map } from 'rxjs';
+import { UserValue } from '../../models/values/user-value';
 
 @Injectable({
   providedIn: 'root'
@@ -80,4 +81,28 @@ export class ChatKeyHelperService {
     const encrypted64 = this.forge.util.encode64(encryptedBytes);
     return encrypted64;
   }
+
+  prepareChatKeys(members: UserValue[], chatId: string) {
+    const {iv, key} = this.generateChatKey();
+    const result = members.map<ChatKeyValue>(
+      member => {
+        const keys = this.rsaHelper
+        .encryptAesKey(iv, key, member.publicKey as string);
+        return {
+          chatId: chatId,
+          iv: keys.aesEncryptedIv,
+          key: keys.aesEncryptedKey,
+          userId: member.id
+        }
+    })
+    return result;
+  }
+
+  private generateChatKey() {
+    var key = this.forge.random.getBytesSync(32);
+    var iv = this.forge.random.getBytesSync(16);
+    return {key, iv};
+  }
+
+
 }

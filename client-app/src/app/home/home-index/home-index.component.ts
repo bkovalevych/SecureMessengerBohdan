@@ -111,9 +111,7 @@ export class HomeIndexComponent implements OnInit, OnDestroy {
   }
 
   async initChats() {
-    await firstValueFrom(this.chatService.initChats())
+    await this.chatService.initChats();
     this.chats = await firstValueFrom(this.chatService.loadChats())
   }
-
-
 }

@@ -10,17 +10,17 @@ export class RsaHelperService {
   constructor() { }
 
   get publicKey () {
-    return sessionStorage.getItem("publicRsaKey") || "";
+    return localStorage.getItem("SecureChatBohdanPublicRsaKey") || "";
   }
   set publicKey (key: string) {
-    sessionStorage.setItem("publicRsaKey", key);
+    localStorage.setItem("SecureChatBohdanPublicRsaKey", key);
   }
 
   private get privateKey () {
-    return sessionStorage.getItem("privateRsaKey") || "";
+    return localStorage.getItem("SecureChatBohdanPrivateRsaKey") || "";
   }
   private set privateKey (key: string) {
-    sessionStorage.setItem("privateRsaKey", key);
+    localStorage.setItem("SecureChatBohdanPrivateRsaKey", key);
   }
 
   initRsaKeys() {
@@ -41,5 +41,14 @@ export class RsaHelperService {
     const privateKey = this.forge.pki.privateKeyFromPem(this.privateKey);
     const encryptedRawValue = this.forge.util.decode64(encrypted);
     return privateKey.decrypt(encryptedRawValue);
-  } 
+  }
+  
+  encryptAesKey(aesIv: any, aesKey: any, publicRsaPemKey: string) {
+    const publicRsaKey = this.forge.pki.publicKeyFromPem(publicRsaPemKey);
+    const aesEncryptedKey = this.forge.util.encode64(
+      publicRsaKey.encrypt(aesKey));
+    const aesEncryptedIv = this.forge.util.encode64(
+      publicRsaKey.encrypt(aesIv));
+    return {aesEncryptedIv, aesEncryptedKey};
+  }
 }

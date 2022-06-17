@@ -5,6 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { LoginRequest } from 'src/app/core/models/requests/login-request';
 import { EmptyApiResponse } from 'src/app/core/models/values/api-response';
 import { AuthService } from 'src/app/core/services/api/auth.service';
+import { RsaHelperService } from 'src/app/core/services/security/rsa-helper.service';
 
 @Component({
   selector: 'app-login',
@@ -19,7 +20,9 @@ export class LoginComponent implements OnInit {
   errors: string[];
   form: FormGroup;
   
-  constructor(private router: Router, 
+  constructor(
+    private rsaHelper: RsaHelperService,
+    private router: Router, 
     private formBuilder: FormBuilder, 
     private activatedRoute: ActivatedRoute,
     private auth: AuthService) { }
@@ -45,7 +48,10 @@ export class LoginComponent implements OnInit {
       return;
     }
     this.errors = [];
+    this.rsaHelper.initRsaKeys();
+    
     const loginRequest: LoginRequest = this.form.value;
+    loginRequest.publicKey = this.rsaHelper.publicKey;
     this.auth.login(loginRequest)
     .subscribe({next:() => {
       const url = this.activatedRoute.snapshot.queryParams['returnUrl'] || '';
