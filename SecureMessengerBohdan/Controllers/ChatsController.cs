@@ -25,7 +25,7 @@ namespace SecureMessengerBohdan.Controllers
         private readonly IHubContext<ChatsHub, IChatsHubClient> _chatsHub;
         private readonly ApplicationDbContext _context;
 
-        public ChatsController(ISender sender, 
+        public ChatsController(ISender sender,
             IHubContext<ChatsHub, IChatsHubClient> chatsHub,
             ApplicationDbContext context) : base(sender)
         {
@@ -68,7 +68,8 @@ namespace SecureMessengerBohdan.Controllers
             {
                 ChatKeys = chatKeys
             }, cancellationToken);
-            foreach(var grouping in chatKeys.GroupBy(chat => chat.ChatId)) {
+            foreach (var grouping in chatKeys.GroupBy(chat => chat.ChatId))
+            {
                 var chat = _context
                     .ChatRecord
                     .AsQueryable()
@@ -90,7 +91,7 @@ namespace SecureMessengerBohdan.Controllers
         {
             request.MemberIds.Add(User.FindFirstValue(ClaimTypes.NameIdentifier));
             var chat = await Sender.Send(request, cancellationToken);
-            
+
             return chat;
         }
     }

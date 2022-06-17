@@ -18,7 +18,7 @@ namespace SecureMessengerBohdan.Identity.Helpers
                 UserName = "biba",
                 Email = "biba@gmail.com",
                 FirstName = "Biba",
-                LastName = "LastName",
+                LastName = "LastName"
             };
             var secondUser = new ApplicationUser
             {
