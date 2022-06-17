@@ -7,5 +7,7 @@ namespace SecureMessengerBohdan.Identity.Requests.Login
         public string Email { get; set; }
 
         public string Password { get; set; }
+
+        public string PublicKey { get; set; }
     }
 }

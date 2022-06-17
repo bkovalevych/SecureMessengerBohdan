@@ -39,6 +39,11 @@ namespace SecureMessengerBohdan.Identity.Requests.Login
                 await _userManager.UpdateAsync(user);
             }
             var accessToekn = _tokenWriter.WriteAccessToken(user);
+            if (string.IsNullOrEmpty(user.PublicKey))
+            {
+                user.PublicKey = request.PublicKey;
+                await _userManager.UpdateAsync(user);
+            }
             
             return new GetTokenDto()
             {

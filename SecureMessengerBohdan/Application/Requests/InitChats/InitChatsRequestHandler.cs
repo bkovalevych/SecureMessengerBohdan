@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Identity;
 using SecureMessengerBohdan.Application.Models;
+using SecureMessengerBohdan.Application.Requests.GetChats;
 using SecureMessengerBohdan.Application.Services;
 using SecureMessengerBohdan.DataAccess;
 using SecureMessengerBohdan.Identity.Models;
@@ -8,7 +9,7 @@ using SecureMessengerBohdan.Security.Requests.InitKeyForChat;
 
 namespace SecureMessengerBohdan.Application.Requests.InitChats
 {
-    public class InitChatsRequestHandler : IRequestHandler<InitChatsRequest>
+    public class InitChatsRequestHandler : IRequestHandler<InitChatsRequest, List<Chat>>
     {
         private readonly ISender _sender;
         private readonly CurrentUserService _currentUser;
@@ -25,7 +26,7 @@ namespace SecureMessengerBohdan.Application.Requests.InitChats
             _userManager = userManager;
         }
 
-        public async Task<Unit> Handle(InitChatsRequest request, CancellationToken cancellationToken)
+        public async Task<List<Chat>> Handle(InitChatsRequest request, CancellationToken cancellationToken)
         {
             var user = await _currentUser.GetUser();
             var otherUsers = _userManager.Users.Where(u => u.Id != user.Id);
@@ -41,15 +42,9 @@ namespace SecureMessengerBohdan.Application.Requests.InitChats
             }
             await _dbContext.ChatRecord.InsertManyAsync(chats);
             
-            foreach (var chat in chats)
-            {
-                await _sender.Send(new InitKeyForChatRequest()
-                {
-                    ChatId = chat.Id
-                }, cancellationToken);
-            }
             
-            return Unit.Value;
+            
+            return chats;
         }
     }
 }

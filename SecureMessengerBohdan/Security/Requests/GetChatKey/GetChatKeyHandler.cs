@@ -24,36 +24,23 @@ namespace SecureMessengerBohdan.Security.Requests.GetChatKey
         {
             ApplicationUser user = await _currentUser.GetUser();
             CheckMember(user);
-            var filter = Builders<ChatKey>.Filter.Eq(it => it.ChatId, request.ChatId);
-            var chatKey = await _context.ChatKeyRecord.Find(filter)
+            var filter = Builders<ChatKey>.Filter;
+            var condition = filter.And(
+                filter.Eq(it => it.UserId, user.Id.ToString()),  
+                filter.Eq(it => it.ChatId, request.ChatId));
+            var chatKey = await _context.ChatKeyRecord.Find(condition)
                 .FirstOrDefaultAsync(cancellationToken);
             CheckKey(chatKey);
 
-            var encryptedResult = EncryptKeys(
-                request.ChatId,
-                chatKey.Key,
-                chatKey.IV,
-                request.PublicRSAKey);
+            var encryptedResult = new GetChatKeyDto()
+            {
+                ChatId = request.ChatId,
+                Key = Convert.ToBase64String(chatKey.Key),
+                IV = Convert.ToBase64String(chatKey.IV),
+                UserId = user.Id.ToString()
+            };
 
             return encryptedResult;
-        }
-
-        private GetChatKeyDto EncryptKeys(string chatId, byte[] key, byte[] iv, string publicKey)
-        {
-            using var rsa = RSA.Create();
-            rsa.ImportFromPem(publicKey);
-            byte[] rawEncryptedKey = rsa.Encrypt(key, RSAEncryptionPadding.Pkcs1);
-            byte[] rawEncryptedIV = rsa.Encrypt(iv, RSAEncryptionPadding.Pkcs1);
-
-            string encryptedKey = Convert.ToBase64String(rawEncryptedKey);
-            string encryptedIV = Convert.ToBase64String(rawEncryptedIV);
-
-            return new GetChatKeyDto()
-            {
-                ChatId = chatId,
-                IV = encryptedIV,
-                Key = encryptedKey
-            };
         }
 
         private void CheckMember(ApplicationUser user)

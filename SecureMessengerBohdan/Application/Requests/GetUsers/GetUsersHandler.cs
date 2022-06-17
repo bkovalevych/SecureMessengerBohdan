@@ -37,6 +37,7 @@ namespace SecureMessengerBohdan.Application.Requests.GetUsers
                     Id = user.Id,
                     LastName = user.LastName,
                     UserName =  user.UserName,
+                    PublicKey = user.PublicKey,
                 })
                 .ToList();
         }
