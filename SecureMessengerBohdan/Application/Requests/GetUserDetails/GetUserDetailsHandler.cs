@@ -22,7 +22,8 @@ namespace SecureMessengerBohdan.Application.Requests.GetUserDetails
                 FirstName = user.FirstName,
                 Id = user.Id,
                 LastName = user.LastName,
-                UserName = user.UserName
+                UserName = user.UserName,
+                PublicKey = user.PublicKey
             };
         }
     }

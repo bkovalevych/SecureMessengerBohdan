@@ -11,5 +11,7 @@ namespace SecureMessengerBohdan.Identity.Models
         public string FirstName { get; set; }
 
         public string LastName { get; set; }
+
+        public string PublicKey { get; set; }
     }
 }

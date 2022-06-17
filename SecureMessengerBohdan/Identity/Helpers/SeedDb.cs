@@ -1,10 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Identity;
-using MongoDB.Driver;
-using SecureMessengerBohdan.Application.Models;
 using SecureMessengerBohdan.DataAccess;
 using SecureMessengerBohdan.Identity.Models;
-using SecureMessengerBohdan.Security.Requests.InitKeyForChat;
 
 namespace SecureMessengerBohdan.Identity.Helpers
 {
@@ -34,22 +31,11 @@ namespace SecureMessengerBohdan.Identity.Helpers
             if (await userManager.FindByEmailAsync(firstUser.Email) == null)
             {
                 await userManager.CreateAsync(firstUser, "12345678");
-                
+
             }
             if (await userManager.FindByEmailAsync(secondUser.Email) == null)
             {
                 await userManager.CreateAsync(secondUser, "12345678");
-                var chat = new Chat()
-                {
-                    Members = new List<string>()
-                    {
-                        firstUser.Id.ToString(),
-                        secondUser.Id.ToString(),
-                    },
-                    Name = $"{firstUser.UserName} {secondUser.UserName}"
-                };
-                await applicationContext.ChatRecord.InsertOneAsync(chat);
-                await sender.Send(new InitKeyForChatRequest() { ChatId = chat.Id });
             }
         }
     }
